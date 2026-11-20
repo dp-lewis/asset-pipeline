@@ -61,7 +61,7 @@ Then **stop and ask** the user to approve. On a yes: `asset approve stone-wall`.
 ```
 asset estimate stone-wall
 ```
-Tell the user the estimated credits and dollar cost, plus anything notable about the settings (format, face limit, quad). **Wait for an explicit go-ahead.** Then:
+Tell the user the estimated credits and dollar cost, plus anything notable about the settings (format, face limit, quad, smart mesh). Smart mesh (`smartLowPoly`) is on by default for cleaner topology. If a task fails on a very complex asset, suggest turning it off. **Wait for an explicit go-ahead.** Then:
 ```
 asset model stone-wall --yes
 ```

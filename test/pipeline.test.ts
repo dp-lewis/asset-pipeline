@@ -40,9 +40,11 @@ describe("costs", () => {
 
   it("estimates Tripo credits from the H-series table", () => {
     const base = parseConfig(template).model;
-    expect(estimateTripoCredits(base).credits).toBe(30);
-    expect(estimateTripoCredits({ ...base, textureQuality: "detailed", quad: true }).credits).toBe(45);
-    expect(estimateTripoCredits({ ...base, texture: false, geometryQuality: "detailed" }).credits).toBe(40);
+    expect(base.faceLimit).toBe(2000);
+    expect(estimateTripoCredits(base).credits).toBe(40);
+    expect(estimateTripoCredits({ ...base, smartLowPoly: false }).credits).toBe(30);
+    expect(estimateTripoCredits({ ...base, smartLowPoly: false, textureQuality: "detailed", quad: true }).credits).toBe(45);
+    expect(estimateTripoCredits({ ...base, smartLowPoly: false, texture: false, geometryQuality: "detailed" }).credits).toBe(40);
   });
 });
 
@@ -76,7 +78,7 @@ describe("tripo client", () => {
     expect((calls[0].init.headers as Record<string, string>).Authorization).toBe("Bearer tsk_test");
     const body = JSON.parse(calls[0].init.body as string);
     expect(body.inputs).toEqual([{ front: "tok-f" }, { back: "tok-b" }]);
-    expect(body).toMatchObject({ model: "v3.1-20260211", texture: true, texture_quality: "standard", face_limit: 8000 });
+    expect(body).toMatchObject({ model: "v3.1-20260211", texture: true, texture_quality: "standard", face_limit: 8000, smart_low_poly: true });
   });
 
   it("surfaces API errors", async () => {

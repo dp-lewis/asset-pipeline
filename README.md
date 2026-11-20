@@ -80,8 +80,8 @@ Every step is logged in the asset's `asset.yaml`: your feedback notes, Tripo tas
 |---|---|
 | Concept draft, medium quality 1024² | ~US$0.05 each |
 | Turnaround (4 views) | ~US$0.20–0.25 |
-| Tripo multiview, standard texture | 30 credits (US$0.30) + a few for conversion |
-| **Typical asset** | **~US$0.75** |
+| Tripo multiview, standard texture + smart mesh | 40 credits (US$0.40) + a few for conversion |
+| **Typical asset** | **~US$0.85** |
 
 Use `quality: high` and `textureQuality: detailed` for hero assets, at roughly double the cost.
 
@@ -96,6 +96,7 @@ npm test
 ## Notes
 
 - Tripo model download URLs expire about 5 minutes after a task finishes, so the CLI downloads straight away. If something fails part-way, `asset model <name> --yes` resumes the same task, and `--restart` starts a fresh one.
+- `smartLowPoly: true` (the default) is the API's version of the "smart mesh" option on Tripo's website: cleaner, hand-built-style topology for +10 credits. Tripo says complex models can occasionally fail with it, so set it to `false` for those. Tripo doesn't document whether it can be combined with `quad: true`.
 - `quad: true` forces FBX output on Tripo's side.
 - Vegetation is a weak spot for Tripo. Use Blender for trees and bushes.
 - Tripo API reference: developers.tripo3d.com (v3, `https://openapi.tripo3d.ai/v3`).

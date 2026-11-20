@@ -40,9 +40,10 @@ model:
   pbr: true
   textureQuality: standard    # fast | standard | detailed | extreme
   geometryQuality: standard   # standard | detailed (+20 credits)
-  faceLimit: 20000            # omit for Tripo's default
+  faceLimit: 2000             # 500–20,000 with smartLowPoly; raise for hero or complex assets
   quad: false                 # +5 credits; forces FBX output
-  smartLowPoly: false         # +10 credits
+  smartLowPoly: true          # +10 credits. Tripo's "smart mesh": clean, hand-built-style topology.
+                              # Keeps faceLimit within 500–20,000. Turn off for very complex shapes if a task fails
   autoSize: true              # real-world scale in metres
   format: FBX                 # FBX for Unreal, GLB for web games
   convert:
