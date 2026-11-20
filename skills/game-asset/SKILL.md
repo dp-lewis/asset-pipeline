@@ -61,7 +61,7 @@ Then **stop and ask** the user to approve. On a yes: `asset approve stone-wall`.
 ```
 asset estimate stone-wall
 ```
-Tell the user the estimated credits and dollar cost, plus anything notable about the settings (format, face limit, quad, smart mesh). Smart mesh (`smartLowPoly`) is on by default for cleaner topology. If a task fails on a very complex asset, suggest turning it off. **Wait for an explicit go-ahead.** Then:
+Tell the user the estimated credits and dollar cost, plus anything notable about the settings (format, face limit, quad, smart mesh). Smart mesh (`smartLowPoly`) is on by default for cleaner topology. If a task fails on a very complex asset, suggest turning it off. The config default is 2000 faces. For an asset that needs more (or less) detail, pass `--face-limit <n>` to both `asset estimate` and `asset model` (500–20,000 with smart mesh on). **Wait for an explicit go-ahead.** Then:
 ```
 asset model stone-wall --yes
 ```
@@ -91,8 +91,8 @@ When the user lists several assets, create them all and generate concepts for ea
 | `asset approve <name> <draft>` | Approve a concept draft |
 | `asset turnaround <name> [--view left back] [--note ..]` | Generate or redo views |
 | `asset approve <name>` | Approve the turnaround |
-| `asset estimate <name>` | Tripo credit estimate |
-| `asset model <name> --yes [--restart]` | Generate, convert, download and copy to output |
+| `asset estimate <name> [--face-limit n]` | Tripo credit estimate |
+| `asset model <name> --yes [--restart] [--face-limit n]` | Generate, convert, download and copy to output |
 | `asset status [name] [--json]` | Stages, file paths, spend |
 | `asset balance` | Tripo credit balance |
 | `asset refs` | Style references in use |

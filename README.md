@@ -69,6 +69,7 @@ asset turnaround stone-wall --view left --note "show the end stones"
 asset approve stone-wall
 asset estimate stone-wall
 asset model stone-wall --yes                              # → art/models/stone-wall.fbx
+asset model stone-wall --yes --face-limit 8000            # one-off override of faceLimit
 asset status
 ```
 
@@ -97,6 +98,7 @@ npm test
 
 - Tripo model download URLs expire about 5 minutes after a task finishes, so the CLI downloads straight away. If something fails part-way, `asset model <name> --yes` resumes the same task, and `--restart` starts a fresh one.
 - `smartLowPoly: true` (the default) is the API's version of the "smart mesh" option on Tripo's website: cleaner, hand-built-style topology for +10 credits. Tripo says complex models can occasionally fail with it, so set it to `false` for those. Tripo doesn't document whether it can be combined with `quad: true`.
+- `--face-limit <n>` on `asset model` and `asset estimate` overrides `faceLimit` for that run only. It applies to new tasks, so use it with `--restart` to redo a finished model at a different density.
 - `quad: true` forces FBX output on Tripo's side.
 - Vegetation is a weak spot for Tripo. Use Blender for trees and bushes.
 - Tripo API reference: developers.tripo3d.com (v3, `https://openapi.tripo3d.ai/v3`).

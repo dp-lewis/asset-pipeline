@@ -6,6 +6,7 @@ import {
   VIEWS,
   isMock,
   loadProject,
+  withFaceLimit,
   type Project,
   type View,
 } from "./config.js";
@@ -243,21 +244,26 @@ export async function turnaround(name: string, opts: { view?: string[]; note?: s
 
 // ---------------------------------------------------------------- estimate / model
 
-export function estimate(name: string): void {
+export function estimate(name: string, opts: { faceLimit?: string } = {}): void {
   const p = loadProject();
   const asset = loadAsset(p, name);
-  const { credits, breakdown } = estimateTripoCredits(p.config.model);
+  const m = withFaceLimit(p.config.model, opts.faceLimit);
+  const { credits, breakdown } = estimateTripoCredits(m);
   const views = Object.keys(asset.turnaround.views);
-  say(`Tripo estimate for ${name} (${views.length} views, ${p.config.model.version ?? "default model"}, ${p.config.model.format}):`);
+  const faces = m.faceLimit ? `${m.faceLimit} faces${opts.faceLimit ? " (override)" : ""}` : "Tripo default faces";
+  say(`Tripo estimate for ${name} (${views.length} views, ${m.version ?? "default model"}, ${m.format}, ${faces}):`);
   for (const line of breakdown) say(`  ${line}`);
   say(`  format conversion: a few credits (exact figure logged afterwards)`);
   say(`Total: ~${credits}+ credits ≈ ${usd(credits / 100)}`);
 }
 
-export async function model(name: string, opts: { yes?: boolean; force?: boolean; restart?: boolean }): Promise<void> {
+export async function model(
+  name: string,
+  opts: { yes?: boolean; force?: boolean; restart?: boolean; faceLimit?: string },
+): Promise<void> {
   const p = loadProject();
   const asset = loadAsset(p, name);
-  const m = p.config.model;
+  const m = withFaceLimit(p.config.model, opts.faceLimit);
 
   const views = Object.fromEntries(
     p.config.turnaround.views
@@ -274,9 +280,10 @@ export async function model(name: string, opts: { yes?: boolean; force?: boolean
 
   const { credits } = estimateTripoCredits(m);
   if (!opts.yes) {
-    estimate(name);
+    estimate(name, opts);
     say("");
-    say(`This spends Tripo credits. Re-run with --yes to go ahead: asset model ${name} --yes`);
+    const flag = opts.faceLimit ? ` --face-limit ${m.faceLimit}` : "";
+    say(`This spends Tripo credits. Re-run with --yes to go ahead: asset model ${name} --yes${flag}`);
     return;
   }
 
@@ -295,13 +302,15 @@ export async function model(name: string, opts: { yes?: boolean; force?: boolean
   try {
     if (taskId && !asset.model.file) {
       say(`Resuming Tripo task ${taskId}…`);
+      if (opts.faceLimit) say(`  Note: --face-limit only applies to new tasks. Add --restart to regenerate at ${m.faceLimit} faces.`);
     } else {
       say(`Uploading ${Object.keys(views).length} views to Tripo…`);
       const tokens: Partial<Record<View, string>> = {};
       for (const [view, file] of Object.entries(views) as [View, string][]) tokens[view] = await client.upload(file);
       taskId = await client.multiviewToModel(tokens, m);
       asset.model = { taskId };
-      addLog(asset, "model", `multiview task ${taskId} (est. ${credits} credits)`);
+      const faces = m.faceLimit ? `, ${m.faceLimit} faces` : "";
+      addLog(asset, "model", `multiview task ${taskId} (est. ${credits} credits${faces})`);
       saveAsset(p, asset);
       say(`Started task ${taskId}`);
     }

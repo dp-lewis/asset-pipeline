@@ -20,7 +20,8 @@ $CLI turnaround stone-wall
 $CLI turnaround stone-wall --view left --note "show the end stones"
 $CLI approve stone-wall
 $CLI model stone-wall            # should stop and ask for --yes
-$CLI model stone-wall --yes
+$CLI estimate stone-wall --face-limit 8000
+$CLI model stone-wall --yes --face-limit 8000
 $CLI status
 $CLI status stone-wall
 test -f art/models/stone-wall.fbx

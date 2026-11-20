@@ -47,7 +47,8 @@ program
 program
   .command("estimate <name>")
   .description("Estimate the Tripo credits for modelling an asset")
-  .action((name) => cmd.estimate(name));
+  .option("--face-limit <n>", "override the config's faceLimit for this run")
+  .action((name, o) => cmd.estimate(name, o));
 
 program
   .command("model <name>")
@@ -55,6 +56,7 @@ program
   .option("--yes", "confirm spending Tripo credits")
   .option("--force", "skip the turnaround-approved check")
   .option("--restart", "start a new Tripo task instead of resuming an unfinished one")
+  .option("--face-limit <n>", "override the config's faceLimit for this run")
   .action((name, o) => cmd.model(name, o));
 
 program

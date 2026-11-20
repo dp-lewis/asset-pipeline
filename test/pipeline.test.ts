@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { parseConfig } from "../src/config.js";
+import { parseConfig, withFaceLimit } from "../src/config.js";
 import { estimateTripoCredits, imageCostUsd } from "../src/costs.js";
 import { TripoClient, primaryModelUrl } from "../src/tripo.js";
 import { conceptPrompt, turnaroundPrompt } from "../src/prompts.js";
@@ -22,6 +22,17 @@ describe("config", () => {
     const c = parseConfig("game: Test\n");
     expect(c.paths.assets).toBe("art/assets");
     expect(c.image.drafts).toBe(3);
+  });
+
+  it("applies a per-run face limit override within Tripo's range", () => {
+    const m = parseConfig(template).model;
+    expect(withFaceLimit(m, undefined)).toBe(m);
+    expect(withFaceLimit(m, "5000").faceLimit).toBe(5000);
+    expect(m.faceLimit).toBe(2000);
+    expect(() => withFaceLimit(m, "abc")).toThrow(/whole number/);
+    expect(() => withFaceLimit(m, "300")).toThrow(/500–20,000/);
+    expect(() => withFaceLimit({ ...m, quad: true }, "15000")).toThrow(/500–10,000/);
+    expect(withFaceLimit({ ...m, smartLowPoly: false }, "50000").faceLimit).toBe(50000);
   });
 
   it("rejects turnarounds without a front view", () => {

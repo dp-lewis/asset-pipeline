@@ -122,6 +122,20 @@ export function parseConfig(text: string): Config {
   return config;
 }
 
+/** Apply a per-run face limit override (e.g. from --face-limit), checking Tripo's allowed range. */
+export function withFaceLimit(m: Config["model"], raw?: string | number): Config["model"] {
+  if (raw === undefined) return m;
+  const n = typeof raw === "number" ? raw : Number(raw);
+  if (!Number.isInteger(n) || n <= 0) throw new Error(`--face-limit must be a whole number above 0 (got "${raw}")`);
+  if (m.smartLowPoly) {
+    const max = m.quad ? 10000 : 20000;
+    if (n < 500 || n > max) {
+      throw new Error(`--face-limit must be 500–${max.toLocaleString("en")} with smartLowPoly${m.quad ? " and quad" : ""} on (got ${n})`);
+    }
+  }
+  return { ...m, faceLimit: n };
+}
+
 export function validateConfig(config: Config): void {
   const views = config.turnaround.views;
   for (const v of views) {
