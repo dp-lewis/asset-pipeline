@@ -1,0 +1,50 @@
+# asset-pipeline config for this game.
+# Paths are relative to this file.
+
+game: My Game
+
+# Art direction applied to every asset. Be specific about realism, materials,
+# palette, era and level of wear — this is what keeps assets consistent.
+style: >
+  Photorealistic, natural materials, overcast British upland light,
+  muted greens, greys and browns, weathered and lived-in.
+
+paths:
+  # Your approved concept art and video frames (from ChatGPT, OpenArt, etc.).
+  # These are passed to the image model as style references.
+  concept: art/concept
+  # One folder per asset: asset.yaml, drafts, approved concept, turnarounds, model.
+  assets: art/assets
+  # Where finished models are copied for import into the engine.
+  output: art/models
+
+image:
+  model: gpt-image-2          # or gpt-image-2.5-sunburst / gpt-image-2.5-flare
+  quality: medium             # low | medium | high
+  size: 1024x1024
+  drafts: 3                   # concept drafts per round
+  maxReferences: 4            # style references sent with each request
+  # USD per million tokens, used for the cost log. Check OpenAI's pricing page.
+  pricesPerMillion:
+    textIn: 5
+    imageIn: 8
+    imageOut: 30
+
+turnaround:
+  # Tripo needs the front view plus at least one other.
+  views: [front, left, back, right]
+
+model:
+  version: v3.1-20260211      # Tripo H3.1. P-series (e.g. P1-20260311) gives low-poly, clean topology
+  texture: true
+  pbr: true
+  textureQuality: standard    # fast | standard | detailed | extreme
+  geometryQuality: standard   # standard | detailed (+20 credits)
+  faceLimit: 20000            # omit for Tripo's default
+  quad: false                 # +5 credits; forces FBX output
+  smartLowPoly: false         # +10 credits
+  autoSize: true              # real-world scale in metres
+  format: FBX                 # FBX for Unreal, GLB for web games
+  convert:
+    pivotToCenterBottom: true
+    # fbxPreset: blender      # blender | 3dsmax | mixamo
